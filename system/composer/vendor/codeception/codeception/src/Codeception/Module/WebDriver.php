@@ -94,6 +94,7 @@ class WebDriver extends \Codeception\Module implements WebInterface, RemoteInter
         if (!isset($this->webDriver)) {
             $this->_initialize();
         }
+        $this->test=$test;
     }
 
     public function _after(\Codeception\TestCase $test)
@@ -815,13 +816,17 @@ class WebDriver extends \Codeception\Module implements WebInterface, RemoteInter
         $form = reset($form);
         /** @var $form \WebDriverElement  **/
         foreach ($params as $param => $value) {
+            if(!is_array($value) && !is_object($value)){
+                $value=(string)$value;
+            }
             $els = $form->findElements(\WebDriverBy::name($param));
             $el = reset($els);
+            if (empty($el)) throw new ElementNotFound($param);
             if ($el->getTagName() == 'textarea') $this->fillField($el, $value);
             if ($el->getTagName() == 'select') $this->selectOption($el, $value);
             if ($el->getTagName() == 'input') {
                 $type = $el->getAttribute('type');
-                if ($type == 'text') $this->fillField($el, $value);
+                if ($type == 'text'  or $type == 'password') $this->fillField($el, $value);
                 if ($type == 'radio' or $type == 'checkbox') {
                     foreach ($els as $radio) {
                         if ($radio->getAttribute('value') == $value) $this->checkOption($radio);
@@ -1069,7 +1074,11 @@ class WebDriver extends \Codeception\Module implements WebInterface, RemoteInter
      * @param string|null $name
      */
     public function switchToIFrame($name = null) {
-        $this->webDriver->switchTo()->frame($name);
+    	if (is_null($name)) {
+    		$this->webDriver->switchTo()->defaultContent();
+    	} else {
+        	$this->webDriver->switchTo()->frame($name);	
+    	}
     }
 
     /**
