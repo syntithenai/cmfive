@@ -7,11 +7,9 @@ $modules['admin'] = array(
     'topmenu' => true,
     'audit_ignore' => array("index"),
     'database_backup' => true,
-    'printing' => array(
-        'command' => array(
-            'unix' => 'lpr $filename',
-            'windows' => '/Path/to/SumatraPDF.exe -print-to $printername $filename'
-        )
-    )
 );
 
+// please override in the global config.php
+
+$modules['admin']['printing']['command']['unix'] = 'lpr $filename';
+$modules['admin']['printing']['command']['windows'] = '/Path/to/SumatraPDF.exe -print-to $printername $filename';
