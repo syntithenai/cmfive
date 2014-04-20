@@ -1,7 +1,14 @@
 <?php
 
 class MailService extends DbService {
-
+	
+	private $transport;
+	
+	public function __construct(Web $w) {
+		parent::__construct($w);
+		$this->initTransport();
+	}
+	
     /**
      * Sends an email using config array from /config.php and the swiftmailer lib
      * for transport. 
@@ -18,11 +25,11 @@ class MailService extends DbService {
      */
     public function sendMail($to, $from, $subject, $body, $cc = null, $bcc = null, $attachments = array()) {
         global $EMAIL_CONFIG;
-
-        // Instantiate transport
-        $transport = Swift_SmtpTransport::newInstance($EMAIL_CONFIG["host"], $EMAIL_CONFIG["port"], 'ssl')
-                ->setUsername($EMAIL_CONFIG["username"])
-                ->setPassword($EMAIL_CONFIG["password"]);
+        
+        if ($this->transport === NULL) {
+        	$this->w->logError("Could not send mail to {$to} from {$from} about {$subject} no email transport defined!");
+        	return;
+        }
 
         $mailer = Swift_Mailer::newInstance($transport);
 
@@ -52,15 +59,21 @@ class MailService extends DbService {
         return $result;
     }
 
-    private function getLayer($layer = "swiftmailer") {
+    private function initTransport() {
+        $layer = $EMAIL_CONFIG['layer'];
         switch ($layer) {
-            case "swiftmailer":
-
-                return $transport;
+        	case "smtp": 
+        		$this->transport = Swift_SmtpTransport::newInstance($EMAIL_CONFIG["host"], $EMAIL_CONFIG["port"], 'ssl')
+                ->setUsername($EMAIL_CONFIG["username"])
+                ->setPassword($EMAIL_CONFIG["password"]);
                 break;
-            case "mail":
-                // Do something 
-                break;
+        	case "sendmail":
+        		if (!empty($EMAIL_CONFIG["command"])) {
+        			$this->transport = Swift_SendmailTransport::newInstance($EMAIL_CONFIG["command"]);
+        		} else {
+        			$this->transport = Swift_SendmailTransport::newInstance();
+        		}
+        		break;
         }
     }
 
