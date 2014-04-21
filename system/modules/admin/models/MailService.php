@@ -31,7 +31,7 @@ class MailService extends DbService {
         	return;
         }
 
-        $mailer = Swift_Mailer::newInstance($transport);
+        $mailer = Swift_Mailer::newInstance($this->transport);
 
         // Create message
         $message = Swift_Message::newInstance($subject)
@@ -47,7 +47,9 @@ class MailService extends DbService {
         // Add attachments
         if (!empty($attachments)) {
             foreach ($attachments as $attachment) {
-                $message->attach(Swift_Attachment::fromPath($attachment));
+            	if (!empty($attachment)) {
+                	$message->attach(Swift_Attachment::fromPath($attachment));
+            	}
             }
         }
 
@@ -60,6 +62,7 @@ class MailService extends DbService {
     }
 
     private function initTransport() {
+    	global $EMAIL_CONFIG;
         $layer = $EMAIL_CONFIG['layer'];
         switch ($layer) {
         	case "smtp": 
