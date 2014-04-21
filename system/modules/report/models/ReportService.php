@@ -272,7 +272,7 @@ class ReportService extends DbService {
 		$filename = str_replace(" ","_",$title) . "_" . date("Y.m.d-H.i") . ".csv";
 
 		// if we have records, comma delimit the fields/columns and carriage return delimit the rows
-		if ($rows) {
+		if (!empty($rows)) {
 			foreach ($rows as $row) {
 				//throw away the first line which list the form parameters
 				$crumbs = array_shift($row);
@@ -290,7 +290,7 @@ class ReportService extends DbService {
 				}
 
 				// iterate row to build URL. if required
-				if ($ukey) {
+				if (!empty($ukey)) {
 					foreach ($row as $r) {
 						foreach ($ukey as $n => $u) {
 							// dump the URL related fields for display
