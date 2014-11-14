@@ -4,36 +4,42 @@
  * 
  * @author Steve Ryan
  */
-class RadDbObject extends SearchableDbObject {
+class RadDbObject extends DbObject {
 
-	public function getSearchFields() {
+	public function getAllFields() {
 		return array('title','data');
 	}
+	public function getSearchFields() {
+		return $this->getAllFields();
+	}
+	// TODO FOR ADVANCED SEARCH
 	public function getSearchConfig() {
 		return array('title'=>[],'data'=>[]);
 	}
-	public function getCreateFields() {
-		return array('title','data');
-	}
 	public function getEditFields() {
-		return array('title','data');
+		return $this->getAllFields();
 	}
 	public function getViewFields() {
-		return array('title','data');
+		return $this->getAllFields();
 	}
 	public function getListFields() {
-		return array('title','data');
+		return $this->getAllFields();
 	}
 	public function getPropertyUIType($property) {
 		return 'text';
 	}
 	public function getPropertyUITypes($columns) {
-		//$this->getDbTableColumnNames()
 		$types=[];
 		foreach ($columns as $k=>$column) {
 			$types[]=$this->getPropertyUIType($column);
 		}
 		return $types;
+	}
+	public function getPropertyMeta($property) {
+		$meta=[];
+		$meta['type']=$this->getPropertyUIType($property);
+		$meta['label']=$this->getHumanReadableAttributeName($property);		
+		return $meta;
 	}
 	
 	/***************************************

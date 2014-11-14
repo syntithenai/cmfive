@@ -5,8 +5,6 @@
  */
 function index_ALL(Web $w,$p) {
 	//$p = $w->pathMatch("classname");
-	// DEMO
-	//if (!($p['classname'] && count(trim($p['classname']))>0)) { $p=['classname'=>'MusicPlayerSong']; }
 	// Automatically print CSRF token
 	if (class_exists("CSRF")) {
 		$w->ctx('csrf_id',CSRF::getTokenID());
@@ -37,7 +35,6 @@ function index_ALL(Web $w,$p) {
 			$meta['titleTemplate']=$o->getTitleTemplate();
 			$meta['searchFields']=implode(",",$o->getSearchFields());
 			$meta['editFields']=implode(",",$o->getEditFields());
-			$meta['createFields']=implode(",",$o->getCreateFields());
 			$meta['viewFields']=implode(",",$o->getViewFields());
 			$meta['listFields']=implode(",",$o->getListFields());
 			$metaTags='';

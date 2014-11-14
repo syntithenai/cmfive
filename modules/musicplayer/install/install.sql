@@ -5,6 +5,10 @@
 CREATE TABLE IF NOT EXISTS `music_player_song` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
+  `file` varchar(255) NOT NULL,
+  `artist_id` bigint(20) NOT NULL,
+  `album_id` bigint(20) NOT NULL,
+  `genre_id` bigint(20) NOT NULL,
   `data` varchar(255) NOT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `dt_created` datetime NOT NULL,

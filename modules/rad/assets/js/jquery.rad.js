@@ -36,24 +36,30 @@ $.fn.rad=function(method) {
 					var finalQuery=[];
 					// CONVERT searchFields title,data and search box value ba gs into REST search URL
 					// /OR/AND/title__like/ba/title__like/gs/END/AND/data_like/ba/data_like/gs/END/END
-					console.log($('[data-id="searchinput"]'),$('[data-id="searchinput"]',plugin),plugin)
 					var query=$('[data-id="searchinput"]',plugin).val();
+					if (query) {
+						query=query.replace("/","").replace("%","").replace("?","");
+					} else {
+						query="";
+					}
 					var searchFields=$('[data-id="metadata"] [data-metadata="searchFields"]',plugin).val();
 					var searchFieldParts=[];
 					if (searchFields && searchFields.length>0) searchFieldParts=searchFields.split(",");
-					var queryParts=query.split(' ');
-					finalQuery.push("OR");
-					$.each(searchFieldParts,function(sfk,sfv) {
-						finalQuery.push("AND");
-						$.each(queryParts,function(k,v) {
-							if ($.trim(v).length>0) {
-								finalQuery.push(sfv+'___contains');
-								finalQuery.push($.trim(v));
-							}
+					if (query && query.length>0) {
+						var queryParts=query.split(' ');
+						finalQuery.push("OR");
+						$.each(searchFieldParts,function(sfk,sfv) {
+							finalQuery.push("AND");
+							$.each(queryParts,function(k,v) {
+								if ($.trim(v).length>0) {
+									finalQuery.push(sfv+'___contains');
+									finalQuery.push($.trim(v));
+								}
+							});
+							finalQuery.push("END");
 						});
 						finalQuery.push("END");
-					});
-					finalQuery.push("END");
+					}
 					return finalQuery;
 				}
 				/*************************************************************
@@ -111,11 +117,10 @@ $.fn.rad=function(method) {
 				 * @param record - query array
 				 ************************************************************/
 				function loadResults(finalQuery) {
-					console.log('loadres',finalQuery)
 					var dfr=$.Deferred();
 					var configParts=getTableConfig();
 					if (configParts && configParts[0] && configParts[0].length>0) {
-						var query="SKIP/2/LIMIT/10/"+finalQuery.join('/');
+						var query=finalQuery.join('/');
 						startWaiting();
 						$.ajax('/rest/index/'+configParts[0]+'/'+query+'?token='+sessionStorage.session,{dataType:'json',error:function(req,msg,err) {
 							dfr.reject('Server error');	
@@ -208,7 +213,6 @@ $.fn.rad=function(method) {
 					var types=$('[data-id="metadata"] [data-metadata="propertyUITypes"]',plugin).val();
 					if (types) types=types.split(",") 
 					else types=[];
-					console.log(properties,labels,types);
 					if (properties && labels && types && properties.length>0 && properties.length==labels.length && properties.length==types.length)  {
 						// collate table meta data
 						var meta={};
@@ -225,16 +229,13 @@ $.fn.rad=function(method) {
 							filters.push(filter); 
 							count++;
 						});
-						//console.log('filters',filters);
 						$('[data-id="querybuilder"]',plugin).queryBuilder({
 							filters: filters,
 							sortable:true,
 							// add styles for foundation
 							onAfterAddRule:function() {
-								console.log();
 								$('[data-id="querybuilder"] button,[data-id="querybuilder"] .btn',plugin).addClass('button').addClass('tiny');
 							},onAfterAddGroup:function() {
-								console.log();
 								$('[data-id="querybuilder"] button,[data-id="querybuilder"] .btn',plugin).addClass('button').addClass('tiny');
 							}
 						});
@@ -249,7 +250,6 @@ $.fn.rad=function(method) {
 						$('[data-id="querybuilder"] .rules-group-container div.pull-right',plugin).first().append(buttonSet);
 						// BIND CLICK EVENTS TO THESE BUTTONS
 						simpleButton.on('click',function(e) {
-							console.log('simpole');
 							$('[data-id="querybuilder"]',plugin).hide();
 							$('[data-id="search"] [data-action="advancedsearch"]',plugin).show();
 							$('[data-id="searchform"]',plugin).show();
@@ -311,9 +311,7 @@ $.fn.rad=function(method) {
 					var existingRow;
 					if (record.id>0) {
 						existingRow=$('[data-id="searchresults"] [data-field="id"]:contains("'+record.id+'")',plugin).parents('.searchresultsrow').first();
-						console.log('EZU',record.id,existingRow);
 					}
-					console.log('fill')
 					var listRowTemplate=$('[data-id="searchresults"] .searchresultsrowtemplate',plugin).first().clone();
 					listRowTemplate.addClass('searchresultsrow').removeClass('searchresultsrowtemplate');
 					$('[data-field]',listRowTemplate).each(function() {
@@ -329,8 +327,6 @@ $.fn.rad=function(method) {
 					$('[data-id="searchresults"] .searchresultsrow',plugin).show();
 					if (!$('[data-id="metadata"] [data-metadata="canEdit"]',plugin).val()) $('[data-action="edit"]',listRowTemplate).hide();
 					if (!$('[data-id="metadata"] [data-metadata="canDelete"]',plugin).val()) $('[data-action="delete"]',listRowTemplate).hide();
-					//if (!$('[data-id="metadata"] [data-metadata="canList"],plugin').val()) $(listRowTemplate).hide();
-					
 				}
 				/*************************************************************
 				 * Show waiting animation
@@ -349,12 +345,9 @@ $.fn.rad=function(method) {
 				 * EVENT BINDING FOR UI
 				 ************************************************************/
 				function bindEvents() {
-					console.log('bind eventss')
 					// SEARCH FORM
 					$('[data-id="searchform"] form',plugin).on('submit',function() {
-						console.log('search');
 						loadResults(searchInputToQuery()).then(function(res) {
-							console.log('searchres',res);
 							$('[data-id="searchresults"] .searchresultsrow').remove();
 							$.each(res,function(k,v) {
 								fillListRow(v);
@@ -448,13 +441,11 @@ $.fn.rad=function(method) {
 					
 				}
 				// FINALLY WE GET TO THE TOP LEVEL - WHAT DO WE DO?
-				console.log('now init');
-		
+				
 				auth().then(function() {
 					bindEvents();
 					$('[data-id="search"]',plugin).show();
 					// auto search
-					console.log('AS',plugin.settings);
 					if (plugin.settings.autoSearch) $('[data-id="searchform"] form',plugin).submit();
 				}).fail(function(err) {
 					flashMessage(err);

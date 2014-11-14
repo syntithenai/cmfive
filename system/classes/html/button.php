@@ -27,6 +27,7 @@ class button {
     public $newtab = false;
     public $href;
     public $onclick;
+    public $extraAttributes;
     
     public static function factory() {
         return new \Html\button();
@@ -76,6 +77,7 @@ class button {
         if (!empty($this->name)) $buffer .= "name=\"{$this->name}\" ";
         if (!empty($this->type)) $buffer .= "type=\"{$this->type}\" ";
         if (!empty($this->value)) $buffer .= "value=\"{$this->value}\" ";
+        if (!empty($this->extraAttributes)) $buffer.=$this->extraAttributes.' ';
         if (!empty($this->onclick)) {
             $buffer .= "onclick=\"{$this->onclick}\"";
         } else {
@@ -95,7 +97,11 @@ class button {
     public function disabled($disabled) {
         $this->disabled = (boolean) $disabled;
         return $this;
-    }    
+    }   
+    
+    public function extraAttributes($extraAttributes) {
+		$this->extraAttributes=$extraAttributes;
+	}
     
     public function form($form) {
         $this->form = $form;

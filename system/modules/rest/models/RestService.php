@@ -1,5 +1,5 @@
 <?php
-class RestService extends SearchableDbObject {
+class RestService extends SearchableService {
 
 	private $token;
 	
@@ -57,13 +57,13 @@ class RestService extends SearchableDbObject {
 		return null;
 	}
 
-	function listJson($classname, $where, $token) {
+	function listJson($classname, $query, $token,$allowDeleted=false) {
 		$error = $this->checkTokenJson($token);
 		if (!$error) $error = $this->checkModuleAccess($classname);
 		if ($error) {
 			return $error;
 		}
-		$os = $this->searchObjects($classname, $where);
+		$os = $this->search($classname, $query,$allowDeleted);
 		if ($os) {
 			foreach ($os as $o) {
 				if ($o->canView($this->w->Auth->user())) {
@@ -73,8 +73,7 @@ class RestService extends SearchableDbObject {
 			return $this->successJson($ar);
 		} else {
 			return $this->successJson([]);
-		}
-		
+		}		
 	}
 	
 	private function _saveNew($classname,$record) {
@@ -147,5 +146,8 @@ class RestService extends SearchableDbObject {
 	function successJson($results) {
 		return json_encode(array("success" => $results));
 	}
+	
+	
+	
 	
 }
