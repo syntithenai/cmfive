@@ -5,7 +5,21 @@
  * perhaps just back to edit form and search results or fully custom 
  * @author Steve Ryan, stever@syntithenai.com 2014
  */
- 
+
+$(document).ready(function() {
+	$('[data-id="playlist"]').load('/musicplayer/playlist');
+	// ALSO POSSIBLE TO LOAD  ASYNC BY AJAX
+	//$('#songs').rad('loadPartial',{module:'rad',partial:'radindex', class:'MusicPlayerSong'}).done(function() {
+			$('#songs').rad({class:'MusicPlayerSong'});
+	//});	
+	//$('#playlists').rad('loadPartial',{module:'rad',partial:'radindex', class:'MusicPlayerPlaylist'}).done(function() {
+			$('#playlists').rad({class:'MusicPlayerPlaylist',autoSearch:'true'});
+	//});
+	
+});
+
+
+/* 
 $(document).ready(function() {
 	$('[data-id="playlist"]').load('/musicplayer/playlist');
 	$('#playlists').rad('loadPartial',{module:'rad',partial:'index', class:'MusicPlayerPlaylist'}).done(function() {
@@ -44,3 +58,4 @@ $(document).ready(function() {
 	});
 	
 });
+*/

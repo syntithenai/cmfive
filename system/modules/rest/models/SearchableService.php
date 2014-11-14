@@ -175,6 +175,32 @@ class SearchableService extends DbService {
 					$queryPart->filter= ' NOT find_in_set('.$keyParts[0].',?)';
 					$queryPart->parameters=array(implode(',',$valueParts));
 				}
+			} else if ($keyParts[1]=='between') {
+				$valueParts=explode('___',$ruleConfig[1]);
+				if ($this->haveValue($ruleConfig[1]) && count($valueParts)==2) {
+					$queryPart->filter= $filter= $keyParts[0]." BETWEEN ? AND ?";
+					$queryPart->parameters=array($valueParts[0],$valueParts[1]);
+				}
+			} else if ($keyParts[1]=='less') {
+				if ($this->haveValue($ruleConfig[1])) {
+					$queryPart->filter= $filter= $keyParts[0]." < ?";
+					$queryPart->parameters=array($valueParts);
+				}
+			} else if ($keyParts[1]=='less_or_equal') {
+				if ($this->haveValue($ruleConfig[1])) {
+					$queryPart->filter= $filter= $keyParts[0]." <= ?";
+					$queryPart->parameters=array($valueParts);
+				}
+			} else if ($keyParts[1]=='greater') {
+				if ($this->haveValue($ruleConfig[1])) {
+					$queryPart->filter= $filter= $keyParts[0]." > ?";
+					$queryPart->parameters=array($valueParts);
+				}
+			} else if ($keyParts[1]=='greater_or_equal') {
+				if ($this->haveValue($ruleConfig[1])) {
+					$queryPart->filter= $filter= $keyParts[0]." >= ?";
+					$queryPart->parameters=array($valueParts);
+				}
 			} else if ($keyParts[1]=='begins_with') {
 				if ($this->haveValue($ruleConfig[1])) {
 					$queryPart->filter= $filter= $keyParts[0]." LIKE ?";

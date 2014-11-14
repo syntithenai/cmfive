@@ -952,10 +952,12 @@ class Web {
         // try to find the partial action and execute
         $partial_action_file = implode("/", array($this->getModuleDir($module), $this->_partialsdir, "actions", $name . ".php"));
         if (file_exists($partial_action_file)) {
-            require_once($partial_action_file);
-
-            // now execute the action
+            // STEVER ALLOW FOR MULTIPLE USE OF PARTIAL IN A PAGE
             $partial_action = $name . "_" . $method;
+            if (!function_exists($partial_action)) {
+				require_once($partial_action_file);
+			}
+            // now execute the action
             if (function_exists($partial_action)) {
                 $partial_action($this, $params);
             }

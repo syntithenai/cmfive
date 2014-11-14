@@ -3,15 +3,7 @@
  * Main template for RAD framework. 
  * @author Steve Ryan, stever@syntithenai.com 2014
  */
-function index_ALL(Web $w,$p) {
-	//$p = $w->pathMatch("classname");
-	// Automatically print CSRF token
-	if (class_exists("CSRF")) {
-		$w->ctx('csrf_id',CSRF::getTokenID());
-		$w->ctx('csrf_val',CSRF::getTokenValue());
-	}
-	
-	//print_r($p);
+function radindex_ALL(Web $w,$p) {
 	if ($p['classname'] && count(trim($p['classname']))>0) {
 		if (class_exists($p['classname'])) {
 			$o=new $p['classname']($w);
@@ -37,11 +29,8 @@ function index_ALL(Web $w,$p) {
 			$meta['editFields']=implode(",",$o->getEditFields());
 			$meta['viewFields']=implode(",",$o->getViewFields());
 			$meta['listFields']=implode(",",$o->getListFields());
-			$metaTags='';
-			foreach ($meta as $k =>$v) {
-				$metaTags.='<input type="hidden" data-metadata="'.$k.'" value="'.$v.'"  />'."\n";
-			}
-			$w->ctx('metaFields',$metaTags);
+			
+			$w->ctx('meta',$meta);
 		} else {
 			echo "Invalid  class";
 			die();

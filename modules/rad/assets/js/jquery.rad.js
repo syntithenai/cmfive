@@ -293,7 +293,7 @@ $.fn.rad=function(method) {
 				 * @ param record - object with properties to map into the edit form using the data-field attribute of form inputs to match
 				 ************************************************************/
 				function fillEditForm(record) {
-					$('[data-id="editform"] input[data-role="editfield"]',plugin).each(function() {
+					$('[data-id="editform"] [data-role="editfield"],[data-id="editform"] [data-role="hiddenfield"]:not([data-noset="true"])',plugin).each(function() {
 						if ($(this).data('field') && $(this).data('field').length && record[$(this).data('field')]) $(this).val(record[$(this).data('field')]);
 						else $(this).val('');
 					});
@@ -391,8 +391,9 @@ $.fn.rad=function(method) {
 							} else if (action=='delete') {
 								deleteRecord(record['id'],row);
 							}
-						} else {
+						} /*else {
 							var id=$('[data-field="id"]',row).html();
+							console.log('domid',id);
 							if (id)  {				
 								if (action=='edit') {
 									loadRecord(id).then(function(record) {
@@ -401,21 +402,23 @@ $.fn.rad=function(method) {
 										$('[data-id="search"]',plugin).hide();
 									});
 								} else if (action=='delete') {
+									console.log('del',record);
 									deleteRecord(record['id'],row);
 								}
 							}
-						}
+						}*/
 						return false;
 					});
 					// EDIT FORM
 					$('[data-id="editform"] form',plugin).on('submit',function() {
 						return false;
 					});
-					$('[data-id="editform"] input[data-action="save"]',plugin).on('click',function() {
+					$('[data-id="editform"] [data-action="save"]',plugin).on('click',function() {
 						var record={};
-						$('[data-id="editform"] input[data-role="editfield"],[data-id="editform"] input[data-role="hiddenfield"]',plugin).each(function() {
+						$('[data-id="editform"] [data-role="editfield"],[data-id="editform"] [data-role="hiddenfield"]',plugin).each(function() {
 							if ($(this).data('field') && $(this).data('field').length>0) record[$(this).data('field')]=$(this).val();
 						});
+						console.log('save',record);
 						saveRecord(record).then(function(savedRecord) {
 							$('[data-id="editform"]',plugin).hide();
 							$('[data-id="search"]',plugin).show();
@@ -433,7 +436,7 @@ $.fn.rad=function(method) {
 						});
 						return false;
 					});
-					$('[data-id="editform"] input[data-action="close"]',plugin).on('click',function() {
+					$('[data-id="editform"] [data-action="close"]',plugin).on('click',function() {
 						$('[data-id="editform"]',plugin).hide();
 						$('[data-id="search"]',plugin).show();
 						return false;

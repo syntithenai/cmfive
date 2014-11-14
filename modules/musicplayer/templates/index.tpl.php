@@ -30,10 +30,8 @@
 			<a href='#songs' >Songs</a>
 		</div>
 		<div class='tab-body'>
-			<div id='playlists'>
-				
-			</div>
-			<div id='songs' >edit songs</div>
+			<div id='playlists'><?php echo $w->partial("radindex",array('classname'=>'MusicPlayerPlaylist'), "rad"); ?></div>
+			<div id='songs' ><?php echo $w->partial("radindex",array('classname'=>'MusicPlayerSong'), "rad"); ?></div>
 		</div>
 		
 	</div>	

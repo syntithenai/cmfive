@@ -227,8 +227,8 @@ class Html {
      *
      * when prefixing a fieldname with a minus sign '-' this field will be read-only
      */
-    public static function form($data, $action = null, $method = "POST", $submitTitle = "Save", $id = null, $class = null, $target = "_self", $enctype = null) {
-        if (empty($data)) return;
+    public static function form($data, $action = null, $method = "POST", $submitTitle = "Save", $id = null, $class = null, $target = "_self", $enctype = null,$extraButtons=[]) {
+		if (empty($data)) return;
         
         $buffer = "";
         
@@ -363,9 +363,24 @@ class Html {
         $buffer .= "</div>";
         $buffer .= "<script>$(function(){try{\$('textarea.ckeditor').each(function(){CKEDITOR.replace(this)})}catch(err){}});</script>";
         // $buffer .= "<script>$(function(){try{\$('textarea.codemirror').each(function(){CodeMirror.fromTextArea(this, {lineNumbers: true, mode: 'text/html', matchBrackets: true})})}catch(err){}});</script>";
-  
-        if (null !== $action) {
-            $buffer .= $form->close($submitTitle);
+		
+        if (null !== $action) {			
+			// Close form tag if needed
+			$extraButtonsHTML='';
+			foreach($extraButtons as $k => $button) {
+				$extraAttributes="";
+				if (array_key_exists('extraAttributes',$button) && is_array($button['extraAttributes'])) {
+					foreach($button['extraAttributes'] as $fieldKey => $fieldValue) {
+						$extraAttributes.=' '.$fieldKey.'="'.$fieldValue.'" ';
+					}
+				}
+			
+				$buttonO = new \Html\button();
+				$type=$button['type'] ? $button['type'] : 'submit';
+				$buttonO->type($type)->text($button['text'])->setClass($button['class'])->extraAttributes($extraAttributes);
+				$extraButtonsHTML .= $buttonO->__toString();
+			}
+			$buffer .= $form->close($submitTitle,$extraButtonsHTML);
         }
         return $buffer;
     }
@@ -468,7 +483,7 @@ class Html {
      * @param <type> $extrabuttons
      * @return <type>
      */
-    public static function multiColForm($data, $action = null, $method = "POST", $submitTitle = "Save", $id = null, $class = null, $extrabuttons = null, $target = "_self", $includeFormTag = true, $validation = null) {
+    public static function multiColForm($data, $action = null, $method = "POST", $submitTitle = "Save", $id = null, $class = null, $extrabuttons = null, $target = "_self", $includeFormTag = true, $validation = null,$extraButtons=[]) {
         if (empty($data)) return;
         
         $buffer = "";
@@ -621,7 +636,21 @@ class Html {
         
         // Close form tag if needed
         if ($includeFormTag) {
-            $buffer .= $form->close($submitTitle, $extrabuttons);
+			$extraButtonsHTML='';
+			foreach($extraButtons as $k => $button) {
+				$extraAttributes="";
+				if (array_key_exists('extraAttributes',$button) && is_array($button['extraAttributes'])) {
+					foreach($button['extraAttributes'] as $fieldKey => $fieldValue) {
+						$extraAttributes.=' '.$fieldKey.'="'.$fieldValue.'" ';
+					}
+				}
+			
+				$button = new \Html\button();
+				$type=$button['type'] ? $button['type'] : 'submit';
+				$button->type($type)->text($button['text'])->setClass($button['class'])->extraAttributes($extraAttributes);
+				$extraButtonsHTML .= $button->__toString();
+			}
+            $buffer .= $form->close($submitTitle, $extraButtonsHTML);
         }
         
         return $buffer;
