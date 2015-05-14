@@ -125,12 +125,12 @@ function renderSuitesBlock($suites,$key,$keyid) {
 	<title>CMFIVE Test Suite</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel='stylesheet' href='../templates/js/foundation-5.5.0/css/normalize.css'/>
-	<link rel='stylesheet' href='../templates/js/foundation-5.5.0/css/foundation.css'/>
+	<link rel='stylesheet' href='../templates/js/foundation-5.2.2/css/normalize.css'/>
+	<link rel='stylesheet' href='../templates/js/foundation-5.2.2/css/foundation.css'/>
 	<link rel="stylesheet" href="app.css" />
-	<script src='../templates/js/foundation-5.5.0/js/vendor/modernizr.js'></script>
-	<script src='../templates/js/foundation-5.5.0/js/vendor/jquery.js'></script>
-	<script src='../templates/js/foundation-5.5.0/js/foundation.min.js'></script>
+	<script src='../templates/js/foundation-5.2.2/js/vendor/modernizr.js'></script>
+	<script src='../templates/js/foundation-5.2.2/js/vendor/jquery.js'></script>
+	<script src='../templates/js/foundation-5.2.2/js/foundation.min.js'></script>
 	<script src='testsuite.js' ></script>
 	
 </head>	
